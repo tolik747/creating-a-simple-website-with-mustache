@@ -1,0 +1,327 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>MXGP Race</title>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="fig/12.png" />
+    <meta name="author" content="Anatolii Vasylov">
+    <meta name="description" content="MXGP, motocross">
+    <meta name="keywords" content="motocross, bike, race, ktm, kawasaki, honda, dirtbikes, dirt">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/treesBlog.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+
+<body class="d-flex flex-column justify-content-center w-100 h-100">
+<header>
+    <h1>MXGP</h1>
+  <div id="google-signin-container"></div>
+  <div id="user-name"></div>
+  <button class="btn" id="sign-out-btn" style="display: none;">Sign Out</button>
+
+
+  <div class="menu">
+    <button id="menuTitle">Menu</button>
+
+    <nav id="menuIts" class="menu mnHide">
+            <a href="#welcome">Welcome!</a>
+            <a href="#articles">Articles</a>
+            <a href="#addArticle">Add your article</a>
+            <a href="#opinions">Visitor opinions</a>
+            <a href="#addOpinion">Add your opinion</a>
+
+    </nav>
+
+</div>
+
+</header>
+
+<main id="router-view">
+</main>
+
+<footer>
+    Anatolii Vasylov<br>
+    (c) 2024
+</footer>
+
+
+<!--Templates for html, dynamically inserted by the router -->
+
+<script id="template-welcome" type="text/template">
+    <article>
+        <div>
+             <h2>Welcome to page MXGP</h2>
+        </div>
+        <p>Here you will find information about the best riders of the 2024 season and the competition calendar with their locations</p>
+
+    </article>
+</script>
+
+
+
+<script id="template-articles" type="text/template">
+    {{#articles}}
+    <article>
+         <h2><a href="{{detailLink}}">{{title}}</a></h2>
+        <p>{{shortContent}}</p>
+        <p><strong>Author:</strong> {{author}}</p>
+    </article>
+    {{/articles}}
+    {{^.}}
+    <p>No articles available.</p>
+    {{/.}}
+    <footer class="pagination">
+        {{#hasPrev}}
+      <a href="#articles{{prevPage}}" class="btn prev" >Previous</a>
+        {{/hasPrev}}
+        {{#hasNext}}
+        <a href="#articles{{currentPage}}" class="btn next">Next</a>
+        {{/hasNext}}
+      <br>
+      <br>
+        <a href="#menuTitle" class="btn">Back to the menu</a>
+    </footer>
+</script>
+
+<script id="template-add-articles" type="text/template">
+  <h2>Add a New Article</h2>
+  <article>
+    <form id="add-article-form">
+      <label for="name">Name:</label><br>
+      <input type="text" id="name" required><br><br>
+
+      <label for="title">Title:</label><br>
+      <input type="text" id="titl" required><br><br>
+
+      <label for="image-url">Image URL:</label><br>
+      <input type="text" id="image-url"><br><br>
+
+      <label for="upload-image">Upload Image:</label><br>
+      <input type="file" id="upload-image" accept="image/png, image/jpeg"><br><br>
+
+      <label for="comment">Comment:</label><br>
+      <textarea id="comment" required></textarea><br><br>
+
+<!--      <label for="keyword">Keyword:</label><br>-->
+      <input type="text" id="keyword" required><br><br>
+
+      <button type="submit">Add Article</button>
+    </form>
+  </article>
+</script>
+
+
+<script id="template-articles-error" type="text/template">
+
+    <article>
+        <h2>Articles acquisition failed</h2>
+        <p>
+            {{errMessage}}
+        </p>
+    </article>
+    <footer  class="btn menuLink"><a href="#menuTitle">Back to the menu</a></footer>
+
+</script>
+
+
+<script id="template-opinions" type="text/template">
+    <article  id="artOpinions">
+        <h2>Visitor Opinions</h2>
+        {{#.}}
+        <section>
+            <h3>{{name}} <i>{{createdDate}}</i></h3>
+            <p>{{email}}</p>
+            {{#url}}
+            <p>URL: <a class="custom-text" href="{{url}}" target="_blank">{{url}}</a></p> <!-- Відображаємо URL, якщо він є -->
+            {{/url}}
+            <p>{{opinion}}</p>
+            <p>{{willReturn}}</p>
+        </section>
+        {{/.}}
+        {{^.}}
+        <section>
+            Sorry, no opinions found.
+        </section>
+        {{/.}}
+        <footer  class="btn menuLink"><a href="#welcome">Back to main page</a></footer>
+    </article>
+
+</script>
+
+
+<script id="template-addOpinion" type="text/template">
+    <article  id="artOpnFrm">
+        <h2>Your feedback about the site</h2>
+        <p>
+            Please, use the form below to state your opinion about this page.
+        </p>
+        <form id="opnFrm">
+            <label for="nameElm" >Name:</label>
+            <input type="text" name="author" id="nameElm" size="20" maxlength="50"
+                   placeholder="Enter your name here" required />
+            <br><br>
+
+            <label for="emailElm">Email:</label>
+            <input type="email" id="emailElm" name="email" required>
+            <br><br>
+
+            <label for="urlElm">URL:</label>
+            <input type="url" id="urlElm" name="image-url" >
+            <br><br>
+
+            <p>What do you like most about the site?</p>
+            <label><input type="radio" name="favorite-feature" value="design" required> Website design</label><br>
+            <label><input type="radio" name="favorite-feature" value="content"> Contents of the articles</label><br>
+            <label><input type="radio" name="favorite-feature" value="usability"> Ease of use</label>
+            <br><br>
+
+            <p>Are you interested in this sport?</p>
+            <label><input type="radio" name="intresting" value="yes" >Yes</label>
+            <label><input type="radio" name="intresting" value="no" >No</label>
+            <label><input type="radio" name="intresting" value="no-answer" >I do not want to answer</label>
+            <br><br>
+
+            <p>What would you like to improve on the site?</p>
+            <label><input type="checkbox"  name="improvements" value="more-content"> More content</label><br>
+            <label><input type="checkbox"  name="improvements" value="better-design"> Best design</label><br>
+            <label><input type="checkbox" name="improvements" value="faster-loading"> Faster loading</label>
+            <br><br>
+
+            <label for="opnElm">Your opinion:</label>
+            <textarea name="comment" id="opnElm" cols="50" rows="3" placeholder="Express your opinion here" required></textarea>
+            <br><br>
+
+            <input type="checkbox" id="willReturnElm" />
+            <label for="willReturnElm">I will definitely return to this page.</label>
+            <br><br>
+            <button type="submit">Send</button>
+        </form>
+        <footer  class="btn menuLink"><a href="#menuTitle">Back to the menu</a></footer>
+    </article>
+</script>
+<!--uloha 6-->
+
+<script id="template-article" type="text/template">
+  <article>
+    <h3>{{title}}</h3>
+    <p>
+      by {{author}}
+    </p>
+    {{#imageLink}}
+    <figure>
+      <img src="{{imageLink}}" alt="article figure" />
+    </figure>
+    {{/imageLink}}
+    <br>
+    {{{content}}}
+<!--    <p>-->
+<!--      Keywords:-->
+<!--      {{tags}}-->
+<!--    </p>-->
+  </article>
+
+  <footer>
+    <a href="{{backLink}}" class="btn linkAsButton"><< Back</a>
+    <a href="{{editLink}}" class="btn linkAsButton">Edit</a>
+    <a href="{{deleteLink}}" class="btn linkAsButton">Delete</a>
+    <a href="#menuTitle" class="btn linkAsButton">Up to the menu</a>
+  </footer>
+
+  <section id="comments-section">
+    <h4>Comments</h4>
+    <div id="comments-list">
+      <!-- Коментарі будуть динамічно завантажуватися тут -->
+    </div>
+    <div id="pagination-controls">
+      <!-- Кнопки пагінації "Previous" та "Next" будуть тут -->
+    </div>
+    <button id="add-comment-button" class="btn linkAsButton " style="color: black">Add Comment</button>
+    <br>
+    <!-- Форма для додавання коментарів -->
+    <form id="comment-form" style="display: none;">
+      <label for="comment-author" class="customforcom">Author:</label>
+      <input class="coment_name" id="comment-author" name="author" type="text" placeholder="Your name" required>
+      <br>
+      <label for="comment-text" class="customforcom">Comment:</label>
+      <textarea class="coment_content" id="comment-text" placeholder="Write your comment here" required></textarea>
+      <br>
+      <button type="submit" class="btn linkAsButton">Add Comment</button>
+      <button type="button" id="cancel-comment-button" class="btn linkAsButton">Cancel</button>
+    </form>
+  </section>
+</script>
+
+<script id="template-article-form" type="text/template">
+  <article>
+    <h2>{{formTitle}}</h2> <br><br>
+
+    <form id="articleForm">
+      <label for="author">Author:</label>
+      <input type="text" name="author" id="author" value="{{author}}" size="50"
+             title="Article author, max. length 100 characters."
+             maxlength="100" placeholder="e.g. Ján Trieska" />
+      <br>
+      <label for="title">Title:</label>
+      <input type="text" name="title" id="title" value="{{title}}" size="50"
+             maxlength="100" pattern="\S[\S\s]*" placeholder="e.g. My story." required
+             title="Article title, mandatory item, max. length: 100 characters. The first character must not be a space."  />
+      <br>
+      <label for="imageLink">Image (url):</label>
+
+      <input type="url" name="imageLink" id="imageLink" value="{{imageLink}}" size="50"
+             title="Image URL, max. length 100 characters." maxlength="100"/>
+      <br>
+      <label></label>
+      <button type="button" id="btShowFileUpload">
+        Upload image
+      </button>
+      <br>
+      <fieldset class="added hiddenElm" id="fsetFileUpload">
+        <legend>Image Upload</legend>
+        <input type="file" id="flElm" name="file" accept="image/jpeg, image/png"/>
+        <br />
+        <button type="button" id="btFileUpload">
+          Send image to server </button>
+        <button type="button" id="btCancelFileUpload">
+          Cancel uploading </button>
+      </fieldset>
+
+
+      <br>
+      <label for="content">Article content:</label>
+      <textarea
+        name="content" id="content" spellcheck="true" lang="sk"
+        cols="50" rows="20" required
+        title="Article content, mandatory item, can be plain text or in HTML.">
+              {{content}}
+            </textarea>
+<!--      <br>-->
+<!--      <label for="tags">Keywords:</label>-->
+<!--      <input  type="text" name="tags" id="tags" value="{{tags}}" size="50"-->
+<!--              title="Keyword list, comma separated." placeholder="e.g. village, drama" />-->
+      <input type="hidden" name="tags" value="{{tags}}">
+      <br> <br>
+      <button type="reset"> Reset Form </button>
+      <button type="submit"> {{submitBtTitle}} </button>
+
+    </form>
+  </article>
+
+  <footer>
+    <a href="{{backLink}}" class="btn linkAsButton"><< Back</a>
+    <a href="#menuTitle" class="btn linkAsButton">Up to the menu</a>
+  </footer>
+</script>
+
+<!--JavaScript code, inserted as a module-->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<script  type="module" src="js/index.js"></script>
+<script type="module" src="js/routes.js"></script>
+<script type="module" src="js/articleFormsHandler.js"></script>
+
+
+
+</body>
+</html>
